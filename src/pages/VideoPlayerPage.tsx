@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { VideoData } from '../types';
-import { ChevronLeft, Bookmark, Share2, List, Settings, X } from 'lucide-react';
+import { ChevronLeft, Bookmark, Share2, List, Settings, X, ChevronDown } from 'lucide-react';
 import { useGesture } from '@use-gesture/react';
 import { fetchVideos } from '../api';
 import { useSavedVideos } from '../contexts/SavedVideosContext';
@@ -35,6 +35,8 @@ const VideoPlayerPage = () => {
   const [showEpisodesModal, setShowEpisodesModal] = useState(false);
   const [currentSeriesEpisodes, setCurrentSeriesEpisodes] = useState<VideoData[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [nextVideo, setNextVideo] = useState<VideoData | null>(null);
 
   // Load all videos and organize them by series
   useEffect(() => {
@@ -71,6 +73,16 @@ const VideoPlayerPage = () => {
         
         setCurrentSeriesIndex(seriesIndex);
         setCurrentVideoIndex(episodeIndex);
+
+        // Determine next video
+        if (episodeIndex < currentSeries.length - 1) {
+          // Next episode in current series
+          setNextVideo(currentSeries[episodeIndex + 1]);
+        } else if (seriesIndex < Object.keys(seriesMap).length - 1) {
+          // First episode of next series
+          const nextSeriesTitle = Object.keys(seriesMap)[seriesIndex + 1];
+          setNextVideo(seriesMap[nextSeriesTitle][0]);
+        }
       } catch (error) {
         console.error('Error loading videos:', error);
         setError('Failed to load episodes');
@@ -119,6 +131,13 @@ const VideoPlayerPage = () => {
 
       player.on('play', () => {
         trackContentConsumption();
+      });
+
+      player.on('complete', () => {
+        // Video has ended, transition to next video if available
+        if (nextVideo) {
+          handleAutoNext(nextVideo);
+        }
       });
 
       player.on('error', (e: any) => {
@@ -176,6 +195,74 @@ const VideoPlayerPage = () => {
       }
     };
   }, [video]);
+
+  const handleAutoNext = (nextVid: VideoData) => {
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true);
+    
+    // Create swipe down animation with a container element
+    const container = document.createElement('div');
+    container.className = 'fixed inset-0 bg-black z-50 transition-transform duration-500 ease-in-out';
+    container.style.transform = 'translateY(-100%)';
+    
+    // Create video preview inside the container
+    const preview = document.createElement('div');
+    preview.className = 'w-full h-full relative';
+    
+    // Add cover image
+    const img = document.createElement('img');
+    img.src = nextVid.assets.cover[0]?.url || '';
+    img.className = 'w-full h-full object-cover';
+    preview.appendChild(img);
+    
+    // Add overlay with video info
+    const overlay = document.createElement('div');
+    overlay.className = 'absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6';
+    
+    const title = document.createElement('h3');
+    title.className = 'text-white text-xl font-bold';
+    title.textContent = nextVid.title;
+    
+    const seriesTitle = document.createElement('p');
+    seriesTitle.className = 'text-pink-500 text-sm';
+    seriesTitle.textContent = nextVid.collection_title;
+    
+    overlay.appendChild(title);
+    overlay.appendChild(seriesTitle);
+    preview.appendChild(overlay);
+    
+    // Add swipe indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'absolute top-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white';
+    
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'animate-bounce bg-black/50 rounded-full p-2 mb-2';
+    iconContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+    
+    const text = document.createElement('span');
+    text.className = 'text-sm bg-black/50 px-3 py-1 rounded-full';
+    text.textContent = 'Next episode';
+    
+    indicator.appendChild(iconContainer);
+    indicator.appendChild(text);
+    preview.appendChild(indicator);
+    
+    container.appendChild(preview);
+    document.body.appendChild(container);
+    
+    // Start animation after a small delay
+    setTimeout(() => {
+      container.style.transform = 'translateY(0)';
+    }, 50);
+    
+    // Navigate to next video after animation completes
+    setTimeout(() => {
+      document.body.removeChild(container);
+      navigate(`/video/${nextVid.content_id}`, { state: { video: nextVid } });
+      setIsTransitioning(false);
+    }, 550);
+  };
 
   const navigateToSeries = (direction: 'next' | 'prev') => {
     const newSeriesIndex = direction === 'next' ? 
@@ -304,6 +391,16 @@ const VideoPlayerPage = () => {
           className="w-full h-full"
         />
       </div>
+
+      {/* Next Video Indicator */}
+      {nextVideo && (
+        <div className="absolute bottom-24 left-0 right-0 flex justify-center z-20 pointer-events-none">
+          <div className="bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full flex items-center">
+            <ChevronDown className="w-5 h-5 text-white mr-2 animate-bounce" />
+            <span className="text-white text-sm">Next episode at end</span>
+          </div>
+        </div>
+      )}
 
       {/* Right Side Controls */}
       <div className="absolute right-4 bottom-24 flex flex-col items-center space-y-6 z-20">
