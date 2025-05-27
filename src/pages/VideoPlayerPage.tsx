@@ -82,10 +82,6 @@ const VideoPlayerPage = () => {
           // First episode of next series
           const nextSeriesTitle = Object.keys(seriesMap)[seriesIndex + 1];
           setNextVideo(seriesMap[nextSeriesTitle][0]);
-        } else {
-          // We're at the last episode of the last series, loop back to first video
-          const firstSeriesTitle = Object.keys(seriesMap)[0];
-          setNextVideo(seriesMap[firstSeriesTitle][0]);
         }
       } catch (error) {
         console.error('Error loading videos:', error);
