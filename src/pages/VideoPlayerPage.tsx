@@ -37,6 +37,7 @@ const VideoPlayerPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextVideo, setNextVideo] = useState<VideoData | null>(null);
+  const [showTransition, setShowTransition] = useState(false);
 
   // Load all videos and organize them by series
   useEffect(() => {
@@ -136,7 +137,7 @@ const VideoPlayerPage = () => {
       player.on('complete', () => {
         // Video has ended, transition to next video if available
         if (nextVideo) {
-          handleAutoNext(nextVideo);
+          handleAutoNext();
         }
       });
 
@@ -196,72 +197,18 @@ const VideoPlayerPage = () => {
     };
   }, [video]);
 
-  const handleAutoNext = (nextVid: VideoData) => {
-    if (isTransitioning) return;
+  const handleAutoNext = () => {
+    if (!nextVideo || isTransitioning) return;
     
     setIsTransitioning(true);
-    
-    // Create swipe down animation with a container element
-    const container = document.createElement('div');
-    container.className = 'fixed inset-0 bg-black z-50 transition-transform duration-500 ease-in-out';
-    container.style.transform = 'translateY(-100%)';
-    
-    // Create video preview inside the container
-    const preview = document.createElement('div');
-    preview.className = 'w-full h-full relative';
-    
-    // Add cover image
-    const img = document.createElement('img');
-    img.src = nextVid.assets.cover[0]?.url || '';
-    img.className = 'w-full h-full object-cover';
-    preview.appendChild(img);
-    
-    // Add overlay with video info
-    const overlay = document.createElement('div');
-    overlay.className = 'absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6';
-    
-    const title = document.createElement('h3');
-    title.className = 'text-white text-xl font-bold';
-    title.textContent = nextVid.title;
-    
-    const seriesTitle = document.createElement('p');
-    seriesTitle.className = 'text-pink-500 text-sm';
-    seriesTitle.textContent = nextVid.collection_title;
-    
-    overlay.appendChild(title);
-    overlay.appendChild(seriesTitle);
-    preview.appendChild(overlay);
-    
-    // Add swipe indicator
-    const indicator = document.createElement('div');
-    indicator.className = 'absolute top-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white';
-    
-    const iconContainer = document.createElement('div');
-    iconContainer.className = 'animate-bounce bg-black/50 rounded-full p-2 mb-2';
-    iconContainer.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-    
-    const text = document.createElement('span');
-    text.className = 'text-sm bg-black/50 px-3 py-1 rounded-full';
-    text.textContent = 'Next episode';
-    
-    indicator.appendChild(iconContainer);
-    indicator.appendChild(text);
-    preview.appendChild(indicator);
-    
-    container.appendChild(preview);
-    document.body.appendChild(container);
-    
-    // Start animation after a small delay
-    setTimeout(() => {
-      container.style.transform = 'translateY(0)';
-    }, 50);
+    setShowTransition(true);
     
     // Navigate to next video after animation completes
     setTimeout(() => {
-      document.body.removeChild(container);
-      navigate(`/video/${nextVid.content_id}`, { state: { video: nextVid } });
+      setShowTransition(false);
+      navigate(`/video/${nextVideo.content_id}`, { state: { video: nextVideo } });
       setIsTransitioning(false);
-    }, 550);
+    }, 800);
   };
 
   const navigateToSeries = (direction: 'next' | 'prev') => {
@@ -508,6 +455,29 @@ const VideoPlayerPage = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Next Video Transition Overlay */}
+      {showTransition && nextVideo && (
+        <div className="fixed inset-0 bg-black z-50 animate-swipe-down">
+          <div className="w-full h-full relative">
+            <img 
+              src={nextVideo.assets.cover[0]?.url} 
+              alt={nextVideo.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+              <h3 className="text-white text-xl font-bold">{nextVideo.title}</h3>
+              <p className="text-pink-500 text-sm">{nextVideo.collection_title}</p>
+            </div>
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white">
+              <div className="animate-bounce bg-black/50 rounded-full p-2 mb-2">
+                <ChevronDown className="w-6 h-6" />
+              </div>
+              <span className="text-sm bg-black/50 px-3 py-1 rounded-full">Next episode</span>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

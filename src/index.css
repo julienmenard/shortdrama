@@ -71,6 +71,19 @@
       animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
     }
   }
+
+  .animate-swipe-down {
+    animation: swipeDown 0.8s ease-in-out;
+  }
+
+  @keyframes swipeDown {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 }
 
 [dir="rtl"] {
