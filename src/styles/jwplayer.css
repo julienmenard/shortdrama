@@ -1,0 +1,28 @@
+/* JW Player fullscreen styles */
+div#jwplayer-container {
+  height: 100vh !important;
+}
+
+video.jw-video.jw-reset {
+  height: 100vh !important;
+}
+
+.jwplayer.jw-stretch-uniform .jw-media video {
+  object-fit: cover !important;
+}
+
+.jwplayer.jw-reset.jw-state-playing {
+  height: 100vh !important;
+}
+
+.jwplayer.jw-reset.jw-state-paused {
+  height: 100vh !important;
+}
+
+.jwplayer.jw-flag-aspect-mode {
+  height: 100vh !important;
+}
+
+.jwplayer.jw-flag-aspect-mode .jw-aspect {
+  height: 100vh !important;
+}

@@ -1,0 +1,69 @@
+{
+  "common": {
+    "all": "الكل",
+    "save": "حفظ",
+    "share": "مشاركة",
+    "episodes": "الحلقات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "cancel": "إلغاء",
+    "back": "رجوع",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "search": "بحث",
+    "trending": "الأكثر رواجاً",
+    "play": "تشغيل",
+    "quality": "الجودة"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "password": "كلمة المرور",
+    "loginButton": "دخول",
+    "signUp": "إنشاء حساب",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "termsAgree": "بالمتابعة، أنت توافق على",
+    "termsLink": "شروط الخدمة",
+    "privacyLink": "سياسة الخصوصية"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "forYou": "مخصص لك",
+    "myList": "قائمتي",
+    "profile": "الملف الشخصي"
+  },
+  "profile": {
+    "accountDetails": "تفاصيل الحساب",
+    "settings": "الإعدادات",
+    "subscription": "الاشتراك",
+    "notifications": "الإشعارات",
+    "privacy": "الخصوصية",
+    "helpSupport": "المساعدة والدعم",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "darkMode": "الوضع الداكن",
+    "lightMode": "الوضع الفاتح",
+    "version": "إصدار تطبيق ShortDrama",
+    "copyright": "© 2025 ShortDrama. جميع الحقوق محفوظة.",
+    "premiumUser": "عضوية مميزة",
+    "freeUser": "مستخدم مجاني"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "pl": "Polski",
+    "zh": "中文",
+    "ar": "العربية"
+  },
+  "sections": {
+    "newRelease": "أحدث الإصدارات",
+    "sweetLove": "الحب العذب",
+    "hiddenIdentity": "الهوية الخفية",
+    "comingSoon": "قريباً",
+    "topCharts": "الأكثر مشاهدة",
+    "exclusive": "حصري"
+  }
+}

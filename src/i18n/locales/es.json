@@ -1,0 +1,69 @@
+{
+  "common": {
+    "all": "Todo",
+    "save": "Guardar",
+    "share": "Compartir",
+    "episodes": "Episodios",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión",
+    "cancel": "Cancelar",
+    "back": "Atrás",
+    "loading": "Cargando...",
+    "error": "Error",
+    "search": "Buscar",
+    "trending": "Tendencias",
+    "play": "Reproducir",
+    "quality": "Calidad"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "signUp": "Registrarse",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "termsAgree": "Al continuar, aceptas los",
+    "termsLink": "Términos de servicio",
+    "privacyLink": "Política de privacidad"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "forYou": "Para ti",
+    "myList": "Mi lista",
+    "profile": "Perfil"
+  },
+  "profile": {
+    "accountDetails": "Detalles de la cuenta",
+    "settings": "Ajustes",
+    "subscription": "Suscripción",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad",
+    "helpSupport": "Ayuda y soporte",
+    "language": "Idioma",
+    "theme": "Tema",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "version": "Versión de ShortDrama",
+    "copyright": "© 2025 ShortDrama. Todos los derechos reservados.",
+    "premiumUser": "Premium",
+    "freeUser": "Usuario gratuito"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "pl": "Polski",
+    "zh": "中文",
+    "ar": "العربية"
+  },
+  "sections": {
+    "newRelease": "Nuevos lanzamientos",
+    "sweetLove": "Amor dulce",
+    "hiddenIdentity": "Identidad oculta",
+    "comingSoon": "Próximamente",
+    "topCharts": "Top charts",
+    "exclusive": "Exclusivo"
+  }
+}

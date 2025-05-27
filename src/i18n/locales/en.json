@@ -1,0 +1,94 @@
+{
+  "common": {
+    "all": "All",
+    "save": "Save",
+    "share": "Share",
+    "episodes": "Episodes",
+    "settings": "Settings",
+    "logout": "Log Out",
+    "cancel": "Cancel",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Error",
+    "search": "Search",
+    "trending": "Trending",
+    "play": "Play",
+    "quality": "Quality",
+    "cast": "Cast to TV",
+    "noResults": "No results found",
+    "tryDifferentSearch": "Try different keywords or check your spelling",
+    "searchResultsFor": "Search results for",
+    "searchPlaceholder": "Search dramas...",
+    "noVideos": "No videos available in this category",
+    "videos": "Videos"
+  },
+  "auth": {
+    "login": "Log In",
+    "email": "Email",
+    "phone": "Phone",
+    "password": "Password",
+    "loginButton": "Log In",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "termsAgree": "By continuing, you agree to ShortDrama's",
+    "termsLink": "Terms of Service",
+    "privacyLink": "Privacy Policy"
+  },
+  "navigation": {
+    "home": "Home",
+    "forYou": "For You",
+    "myList": "My List",
+    "profile": "Profile"
+  },
+  "profile": {
+    "accountDetails": "Account Details",
+    "settings": "Settings",
+    "subscription": "Subscription",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "helpSupport": "Help & Support",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "version": "ShortDrama App Version",
+    "copyright": "© 2025 ShortDrama. All rights reserved.",
+    "premiumUser": "Premium",
+    "freeUser": "Free User",
+    "anonymous": "Anonymous User"
+  },
+  "subscription": {
+    "title": "Premium Subscription",
+    "premiumFeatures": "Premium Features",
+    "features": {
+      "adFree": "Ad-free viewing experience",
+      "offline": "Download videos for offline viewing",
+      "quality": "HD and Full HD quality",
+      "multiDevice": "Watch on multiple devices",
+      "earlyAccess": "Early access to new episodes",
+      "exclusive": "Exclusive premium content"
+    },
+    "appStore": "App Store",
+    "viaApple": "Subscribe via Apple",
+    "googlePlay": "Google Play",
+    "viaAndroid": "Subscribe via Android",
+    "terms": "By subscribing, you agree to our Terms of Service and Privacy Policy. Subscription will automatically renew unless canceled at least 24 hours before the end of the current period."
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "pl": "Polski",
+    "zh": "中文",
+    "ar": "العربية"
+  },
+  "sections": {
+    "newRelease": "New Release",
+    "sweetLove": "Sweet Love",
+    "hiddenIdentity": "Hidden Identity",
+    "comingSoon": "Coming Soon",
+    "topCharts": "Top Charts",
+    "exclusive": "Exclusive"
+  }
+}

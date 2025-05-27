@@ -1,0 +1,69 @@
+{
+  "common": {
+    "all": "Wszystko",
+    "save": "Zapisz",
+    "share": "Udostępnij",
+    "episodes": "Odcinki",
+    "settings": "Ustawienia",
+    "logout": "Wyloguj",
+    "cancel": "Anuluj",
+    "back": "Wstecz",
+    "loading": "Ładowanie...",
+    "error": "Błąd",
+    "search": "Szukaj",
+    "trending": "Popularne",
+    "play": "Odtwórz",
+    "quality": "Jakość"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "email": "Email",
+    "phone": "Telefon",
+    "password": "Hasło",
+    "loginButton": "Zaloguj",
+    "signUp": "Zarejestruj się",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "noAccount": "Nie masz konta?",
+    "termsAgree": "Kontynuując, akceptujesz",
+    "termsLink": "Warunki korzystania",
+    "privacyLink": "Politykę prywatności"
+  },
+  "navigation": {
+    "home": "Strona główna",
+    "forYou": "Dla Ciebie",
+    "myList": "Moja lista",
+    "profile": "Profil"
+  },
+  "profile": {
+    "accountDetails": "Szczegóły konta",
+    "settings": "Ustawienia",
+    "subscription": "Subskrypcja",
+    "notifications": "Powiadomienia",
+    "privacy": "Prywatność",
+    "helpSupport": "Pomoc i wsparcie",
+    "language": "Język",
+    "theme": "Motyw",
+    "darkMode": "Tryb ciemny",
+    "lightMode": "Tryb jasny",
+    "version": "Wersja aplikacji ShortDrama",
+    "copyright": "© 2025 ShortDrama. Wszelkie prawa zastrzeżone.",
+    "premiumUser": "Premium",
+    "freeUser": "Użytkownik darmowy"
+  },
+  "languages": {
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "pl": "Polski",
+    "zh": "中文",
+    "ar": "العربية"
+  },
+  "sections": {
+    "newRelease": "Nowości",
+    "sweetLove": "Słodka miłość",
+    "hiddenIdentity": "Ukryta tożsamość",
+    "comingSoon": "Wkrótce",
+    "topCharts": "Najpopularniejsze",
+    "exclusive": "Ekskluzywne"
+  }
+}
