@@ -184,45 +184,6 @@ const VideoFeedItem = ({
               {video.title}
             </h1>
           </div>
-          
-          {/* Debug info for current and next video */}
-          <div className="mt-2 px-4 py-2 bg-black/50 rounded-lg text-sm">
-            <p className="text-pink-500">Current: {video.title}</p>
-            {nextVideo && (
-              <p className="text-green-500">Next: {nextVideo.title}</p>
-            )}
-            
-            {/* Display all episodes of the same collection */}
-            <div className="mt-2 pt-2 border-t border-gray-700">
-              <p className="text-blue-400 font-bold mb-1">Episodes in "{video.collection_title}":</p>
-              <div className="max-h-32 overflow-y-auto bg-black/30 rounded p-2">
-                {sameCollectionVideos.map((ep) => (
-                  <div 
-                    key={ep.content_id} 
-                    className={`text-xs mb-1 p-1 rounded ${
-                      ep.content_id === video.content_id 
-                        ? 'bg-pink-900/50 text-white' 
-                        : ep.content_id === nextVideo?.content_id 
-                          ? 'bg-green-900/50 text-green-300'
-                          : 'text-gray-400'
-                    }`}
-                  >
-                    {ep.display_order}. {ep.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Display API request URL */}
-            {apiRequestUrl && (
-              <div className="mt-2 pt-2 border-t border-gray-700">
-                <p className="text-yellow-400 font-bold mb-1">API Request:</p>
-                <div className="bg-black/30 rounded p-2 overflow-x-auto">
-                  <p className="text-xs text-gray-300 break-all font-mono">{apiRequestUrl}</p>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
