@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth, AuthProvider } from './contexts/AuthContext';
 import { SavedVideosProvider } from './contexts/SavedVideosContext';
+import { WatchHistoryProvider } from './contexts/WatchHistoryContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
@@ -95,7 +96,9 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <SavedVideosProvider>
-            <AppRoutes />
+            <WatchHistoryProvider>
+              <AppRoutes />
+            </WatchHistoryProvider>
           </SavedVideosProvider>
         </AuthProvider>
       </ThemeProvider>

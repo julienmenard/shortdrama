@@ -5,6 +5,7 @@ import { ChevronLeft, Bookmark, Share2, List, Settings, X, ChevronDown } from 'l
 import { useGesture } from '@use-gesture/react';
 import { fetchVideos } from '../api';
 import { useSavedVideos } from '../contexts/SavedVideosContext';
+import { useWatchHistory } from '../contexts/WatchHistoryContext';
 import ShareModal from '../components/ShareModal';
 import EpisodesModal from '../components/EpisodesModal';
 import { trackContentConsumption } from '../services/snowplow';
@@ -31,6 +32,7 @@ const VideoPlayerPage = () => {
   const [seriesOrder, setSeriesOrder] = useState<string[]>([]);
   const playerInstanceRef = useRef<any>(null);
   const { addToSavedVideos, removeFromSavedVideos, isVideoSaved } = useSavedVideos();
+  const { addToWatchHistory } = useWatchHistory();
   const [showShareModal, setShowShareModal] = useState(false);
   const [showEpisodesModal, setShowEpisodesModal] = useState(false);
   const [currentSeriesEpisodes, setCurrentSeriesEpisodes] = useState<VideoData[]>([]);
@@ -38,6 +40,7 @@ const VideoPlayerPage = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [nextVideo, setNextVideo] = useState<VideoData | null>(null);
   const [showTransition, setShowTransition] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
 
   // Load all videos and organize them by series
   useEffect(() => {
@@ -132,6 +135,11 @@ const VideoPlayerPage = () => {
 
       player.on('play', () => {
         trackContentConsumption();
+        if (!videoStarted) {
+          // Add to watch history when playback starts
+          addToWatchHistory(videoToPlay);
+          setVideoStarted(true);
+        }
       });
 
       player.on('complete', () => {
@@ -181,6 +189,9 @@ const VideoPlayerPage = () => {
     };
 
     attemptInit();
+    
+    // Reset videoStarted when a new video is loaded
+    setVideoStarted(false);
 
     return () => {
       if (checkInterval) {

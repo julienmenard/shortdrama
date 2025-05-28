@@ -4,6 +4,7 @@ import { VideoData } from '../types';
 import { Bookmark, Share2, List, Settings, ChevronLeft } from 'lucide-react';
 import BottomNavigation from '../components/BottomNavigation';
 import { useSavedVideos } from '../contexts/SavedVideosContext';
+import { useWatchHistory } from '../contexts/WatchHistoryContext';
 import ShareModal from '../components/ShareModal';
 import EpisodesModal from '../components/EpisodesModal';
 import { trackContentConsumption } from '../services/snowplow';
@@ -44,10 +45,12 @@ const VideoFeedItem = ({
   const videoRef = useRef<HTMLDivElement>(null);
   const [playerInstance, setPlayerInstance] = useState<any>(null);
   const { addToSavedVideos, removeFromSavedVideos, isVideoSaved } = useSavedVideos();
+  const { addToWatchHistory } = useWatchHistory();
   const [showQualityMenu, setShowQualityMenu] = useState(false);
   const [currentQuality, setCurrentQuality] = useState('720p');
   const [showEpisodesModal, setShowEpisodesModal] = useState(false);
   const navigate = useNavigate();
+  const [videoStarted, setVideoStarted] = useState(false);
   
   // Filter videos to only include those from the same collection as the current video
   const sameCollectionVideos = allVideos
@@ -112,8 +115,11 @@ const VideoFeedItem = ({
     });
 
     player.on('play', () => {
-      if (isActive) {
+      if (isActive && !videoStarted) {
         trackContentConsumption();
+        // Add to watch history when the video starts playing
+        addToWatchHistory(video);
+        setVideoStarted(true);
       }
     });
     
@@ -142,6 +148,7 @@ const VideoFeedItem = ({
     if (isActive) {
       playerInstance.play();
       playerInstance.setMute(false);
+      setVideoStarted(false); // Reset for the newly active video
     } else {
       playerInstance.pause();
       playerInstance.setMute(true);
@@ -165,18 +172,16 @@ const VideoFeedItem = ({
     >
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/80 to-transparent">
-        <div className="flex flex-col">
-          <div className="flex items-center">
-            <button 
-              onClick={() => navigate('/')}
-              className="text-white mr-4"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-white font-medium text-lg line-clamp-1">
-              {video.title}
-            </h1>
-          </div>
+        <div className="flex items-center">
+          <button 
+            onClick={() => navigate('/')}
+            className="text-white mr-4"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-white font-medium text-lg line-clamp-1">
+            {video.title}
+          </h1>
         </div>
       </div>
 
