@@ -198,16 +198,8 @@ const MyListPage = () => {
     <div className="min-h-screen bg-black pb-20">
       <div className="sticky top-0 z-10 bg-black bg-opacity-95">
         <div className="px-4 pt-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex justify-center mb-4">
             <Logo size="medium" />
-            {isEditing && (
-              <button
-                onClick={toggleEdit}
-                className="text-white text-sm"
-              >
-                Cancel
-              </button>
-            )}
           </div>
 
           <div className="flex items-center justify-between">
