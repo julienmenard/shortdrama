@@ -2,12 +2,13 @@ import React from 'react';
 
 interface LogoProps {
   className?: string;
-  size?: 'small' | 'large';
+  size?: 'small' | 'medium' | 'large';
 }
 
 const Logo: React.FC<LogoProps> = ({ className = "", size = 'small' }) => {
   const sizeClasses = {
     small: 'h-8',
+    medium: 'h-10',
     large: 'h-16 md:h-20'
   };
 

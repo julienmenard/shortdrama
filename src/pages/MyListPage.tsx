@@ -164,13 +164,13 @@ const MyListPage = () => {
                 onClick={() => !isEditing && handleVideoSelect(video)}
               >
                 <h3 className="font-medium text-white line-clamp-1">
-                  Drama Name
+                  {video.collection_title.split(' - ')[0]}
                 </h3>
                 <p className="text-xs text-gray-400 line-clamp-1 mb-1">
-                  A gripping tale of love and betrayal.
+                  {video.description.substring(0, 60)}...
                 </p>
                 <p className="text-xs text-pink-500">
-                  EP.1 / EP.{video.display_order}
+                  EP.{video.display_order}
                 </p>
               </div>
               
@@ -199,7 +199,7 @@ const MyListPage = () => {
       <div className="sticky top-0 z-10 bg-black bg-opacity-95">
         <div className="px-4 pt-4">
           <div className="flex items-center justify-between mb-4">
-            <Logo />
+            <Logo size="medium" />
             {isEditing && (
               <button
                 onClick={toggleEdit}

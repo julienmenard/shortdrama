@@ -140,7 +140,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-[rgb(var(--background))] pb-20">
       <div className="sticky top-0 z-10 bg-[rgb(var(--background))] bg-opacity-95 pt-3 pb-2 px-4">
         <div className="flex items-center justify-center mb-4">
-          <Logo />
+          <Logo size="medium" />
         </div>
         
         <div className="relative mb-4">
