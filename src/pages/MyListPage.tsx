@@ -104,14 +104,6 @@ const MyListPage = () => {
                 )}
               </div>
             )}
-            <div className="mt-2">
-              <p className="text-sm text-white font-medium line-clamp-1">
-                {video.collection_title.split(' - ')[0]}
-              </p>
-              <p className="text-xs text-gray-400 mt-0.5">
-                EPISODE {video.display_order}
-              </p>
-            </div>
           </div>
         ))}
       </div>
