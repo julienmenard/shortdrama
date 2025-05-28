@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 import SubscriptionView from '../components/SubscriptionView';
+import PrivacyPolicy from './PrivacyPolicy';
+import HelpSupport from './HelpSupport';
 
 const LanguageSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { i18n } = useTranslation();
