@@ -5,12 +5,12 @@ import { useWatchHistory } from '../contexts/WatchHistoryContext';
 import { VideoData } from '../types';
 import VideoCard from '../components/VideoCard';
 import BottomNavigation from '../components/BottomNavigation';
-import { Film, History, Pencil, X, Check, Trash2 } from 'lucide-react';
+import { Film, History, Pencil, X, Check, Trash2, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const MyListPage = () => {
   const { savedVideos, removeFromSavedVideos } = useSavedVideos();
-  const { watchHistory, removeFromWatchHistory, clearWatchHistory } = useWatchHistory();
+  const { watchHistory, removeFromWatchHistory, clearWatchHistory, addToWatchHistory } = useWatchHistory();
   const [activeTab, setActiveTab] = useState<'mylist' | 'history'>('mylist');
   const [isEditing, setIsEditing] = useState(false);
   const [selectedVideos, setSelectedVideos] = useState<number[]>([]);
@@ -64,22 +64,27 @@ const MyListPage = () => {
     setSelectedVideos([]);
   };
 
-  const renderVideoList = (videos: VideoData[]) => {
-    if (videos.length === 0) {
+  const handleSaveVideo = (video: VideoData) => {
+    const { addToSavedVideos, removeFromSavedVideos, isVideoSaved } = useSavedVideos();
+    if (isVideoSaved(video.content_id)) {
+      removeFromSavedVideos(video.content_id);
+    } else {
+      addToSavedVideos(video);
+    }
+  };
+
+  const renderMyListContent = () => {
+    if (savedVideos.length === 0) {
       return (
         <div className="text-center py-12">
-          <p className="text-gray-500">
-            {activeTab === 'mylist' 
-              ? 'No saved videos yet' 
-              : 'No watch history yet'}
-          </p>
+          <p className="text-gray-500">No saved videos yet</p>
         </div>
       );
     }
 
     return (
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {videos.map((video) => (
+        {savedVideos.map((video) => (
           <div key={video.content_id} className="relative">
             <VideoCard
               video={video}
@@ -110,6 +115,90 @@ const MyListPage = () => {
             </div>
           </div>
         ))}
+      </div>
+    );
+  };
+
+  const renderHistoryContent = () => {
+    if (watchHistory.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No watch history yet</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        {watchHistory.map((video) => {
+          const { isVideoSaved } = useSavedVideos();
+          const isSaved = isVideoSaved(video.content_id);
+          
+          return (
+            <div 
+              key={video.content_id} 
+              className="flex items-center gap-3"
+            >
+              {/* Selectable checkbox when editing */}
+              {isEditing && (
+                <div 
+                  onClick={() => handleVideoSelect(video)}
+                  className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                    selectedVideos.includes(video.content_id)
+                      ? 'bg-pink-500 border-pink-500'
+                      : 'border-white bg-black/50'
+                  }`}
+                >
+                  {selectedVideos.includes(video.content_id) && (
+                    <Check className="w-4 h-4 text-white" />
+                  )}
+                </div>
+              )}
+              
+              {/* Thumbnail image */}
+              <div 
+                className="flex-shrink-0 w-20 h-24 rounded-md overflow-hidden cursor-pointer"
+                onClick={() => !isEditing && handleVideoSelect(video)}
+              >
+                <img 
+                  src={video.assets.cover[0]?.url} 
+                  alt={video.title} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Video details */}
+              <div 
+                className="flex-1 cursor-pointer"
+                onClick={() => !isEditing && handleVideoSelect(video)}
+              >
+                <h3 className="font-medium text-white line-clamp-1">
+                  Drama Name
+                </h3>
+                <p className="text-xs text-gray-400 line-clamp-1 mb-1">
+                  A gripping tale of love and betrayal.
+                </p>
+                <p className="text-xs text-pink-500">
+                  EP.1 / EP.{video.display_order}
+                </p>
+              </div>
+              
+              {/* Bookmark button */}
+              {!isEditing && (
+                <button 
+                  className="flex-shrink-0 p-2"
+                  onClick={() => handleSaveVideo(video)}
+                >
+                  <Bookmark 
+                    className={`w-5 h-5 ${
+                      isSaved ? 'text-pink-500 fill-pink-500' : 'text-white'
+                    }`} 
+                  />
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -177,11 +266,7 @@ const MyListPage = () => {
       </div>
 
       <div className="px-4 pt-4">
-        {activeTab === 'mylist' ? (
-          renderVideoList(savedVideos)
-        ) : (
-          renderVideoList(watchHistory)
-        )}
+        {activeTab === 'mylist' ? renderMyListContent() : renderHistoryContent()}
       </div>
 
       {isEditing && (activeTab === 'mylist' ? savedVideos.length > 0 : watchHistory.length > 0) && (
