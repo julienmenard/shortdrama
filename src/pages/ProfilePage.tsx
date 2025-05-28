@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, Settings, CreditCard, Bell, Shield, HelpCircle, ChevronRight, ChevronLeft, Plus, Minus, Languages, Moon, Sun } from 'lucide-react';
+import { LogOut, User, CreditCard, Bell, Shield, HelpCircle, ChevronRight, ChevronLeft, Languages, Moon, Sun } from 'lucide-react';
 import BottomNavigation from '../components/BottomNavigation';
 import Logo from '../components/Logo';
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +57,155 @@ const LanguageSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
+const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [requestStatus, setRequestStatus] = useState<string>('pending'); // pending, granted, denied
+  const { t } = useTranslation();
+
+  const requestNotificationPermission = async () => {
+    try {
+      // Check if the browser supports notifications
+      if (!('Notification' in window)) {
+        console.log('This browser does not support notifications');
+        setRequestStatus('unsupported');
+        return;
+      }
+
+      // Check if permission is already granted
+      if (Notification.permission === 'granted') {
+        setRequestStatus('granted');
+        return;
+      }
+
+      // Request permission
+      const permission = await Notification.requestPermission();
+      setRequestStatus(permission);
+      
+      // Show a test notification if permission was granted
+      if (permission === 'granted') {
+        new Notification('ShortDrama Notifications Enabled', {
+          body: 'You will now receive notifications about new episodes and updates.',
+          icon: '/src/pages/logo/heartblood.png'
+        });
+      }
+    } catch (error) {
+      console.error('Error requesting notification permission:', error);
+      setRequestStatus('error');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div className="bg-[rgb(var(--background))] rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-[rgb(var(--foreground))]">Notifications</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-300"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div className="space-y-4">
+          {requestStatus === 'pending' && (
+            <>
+              <p className="text-gray-300 mb-4">
+                Would you like to receive browser notifications from ShortDrama when new episodes are released or when there are important updates?
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={requestNotificationPermission}
+                  className="flex-1 bg-pink-600 text-white py-3 rounded-lg font-medium hover:bg-pink-700 transition-colors"
+                >
+                  Enable Notifications
+                </button>
+                <button
+                  onClick={onClose}
+                  className="flex-1 bg-gray-700 text-white py-3 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                >
+                  Not Now
+                </button>
+              </div>
+            </>
+          )}
+          
+          {requestStatus === 'granted' && (
+            <div className="text-center py-4">
+              <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Notifications Enabled!</h3>
+              <p className="text-gray-300 mb-4">
+                You'll now receive notifications about new episodes and important updates.
+              </p>
+              <button
+                onClick={onClose}
+                className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          )}
+          
+          {requestStatus === 'denied' && (
+            <div className="text-center py-4">
+              <div className="bg-red-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Notifications Blocked</h3>
+              <p className="text-gray-300 mb-4">
+                You've blocked notifications for ShortDrama. To enable them, please update your browser settings.
+              </p>
+              <button
+                onClick={onClose}
+                className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          )}
+          
+          {requestStatus === 'unsupported' && (
+            <div className="text-center py-4">
+              <div className="bg-yellow-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Not Supported</h3>
+              <p className="text-gray-300 mb-4">
+                Your browser doesn't support notifications. Please try using a different browser.
+              </p>
+              <button
+                onClick={onClose}
+                className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          )}
+          
+          {requestStatus === 'error' && (
+            <div className="text-center py-4">
+              <div className="bg-red-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Something Went Wrong</h3>
+              <p className="text-gray-300 mb-4">
+                We couldn't set up notifications. Please try again later.
+              </p>
+              <button
+                onClick={onClose}
+                className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProfilePage: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -64,6 +213,7 @@ const ProfilePage: React.FC = () => {
   const [showHelpSupport, setShowHelpSupport] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [showSubscription, setShowSubscription] = useState(false);
+  const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [username, setUsername] = useState<string>('');
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
@@ -93,10 +243,8 @@ const ProfilePage: React.FC = () => {
   const primaryIdentifier = user?.msisdn || user?.email || t('profile.anonymous');
 
   const menuItems = [
-    { icon: User, label: t('profile.accountDetails'), action: () => console.log('Account details clicked') },
-    { icon: Settings, label: t('profile.settings'), action: () => console.log('Settings clicked') },
     { icon: CreditCard, label: t('profile.subscription'), action: () => setShowSubscription(true) },
-    { icon: Bell, label: t('profile.notifications'), action: () => console.log('Notifications clicked') },
+    { icon: Bell, label: t('profile.notifications'), action: () => setShowNotificationDialog(true) },
     { icon: Languages, label: t('profile.language'), action: () => setShowLanguageSelector(true) },
     { icon: theme === 'dark' ? Sun : Moon, label: t('profile.theme'), action: toggleTheme },
     { icon: Shield, label: t('profile.privacy'), action: () => setShowPrivacyPolicy(true) },
@@ -180,6 +328,10 @@ const ProfilePage: React.FC = () => {
         <p>{t('profile.version')} 1.0.0</p>
         <p className="mt-1">{t('profile.copyright')}</p>
       </div>
+
+      {showNotificationDialog && (
+        <NotificationPermissionDialog onClose={() => setShowNotificationDialog(false)} />
+      )}
 
       <BottomNavigation />
     </div>
