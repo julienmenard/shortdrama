@@ -25,7 +25,8 @@ const VideoFeedItem = ({
   hasNext,
   hasPrev,
   allVideos,
-  nextVideo
+  nextVideo,
+  currentIndex
 }: { 
   video: VideoData;
   isActive: boolean;
@@ -36,6 +37,7 @@ const VideoFeedItem = ({
   hasPrev: boolean;
   allVideos: VideoData[];
   nextVideo: VideoData | null;
+  currentIndex: number;
 }) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const [playerInstance, setPlayerInstance] = useState<any>(null);
@@ -271,7 +273,7 @@ const VideoFeedItem = ({
             const selectedIndex = allVideos.findIndex(v => v.content_id === episode.content_id);
             if (selectedIndex !== -1) {
               // Directly navigate to the selected episode index in the main feed
-              if (selectedIndex !== currentVideoIndex) {
+              if (selectedIndex !== currentIndex) {
                 const selectedElement = document.querySelector(`[data-index="${selectedIndex}"]`);
                 if (selectedElement) {
                   selectedElement.scrollIntoView({ behavior: 'smooth' });
@@ -424,6 +426,7 @@ const FeedPage = () => {
               hasPrev={index > 0}
               allVideos={videos}
               nextVideo={getNextVideo(index)}
+              currentIndex={currentVideoIndex}
             />
           </div>
         ))}
