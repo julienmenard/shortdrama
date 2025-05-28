@@ -87,11 +87,11 @@ export const startNotificationScheduler = (): void => {
   // Schedule first notification immediately
   sendFakeNotification();
   
-  // Then set interval for notifications every 30 seconds (for testing purposes)
+  // Set interval for notifications every 60 seconds
   notificationTimer = window.setInterval(() => {
     console.log('Sending scheduled notification');
     sendFakeNotification();
-  }, 30 * 1000); // 30 seconds for testing purposes
+  }, 60 * 1000); // 60 seconds interval
   
   console.log('Notification timer set:', notificationTimer);
 };
