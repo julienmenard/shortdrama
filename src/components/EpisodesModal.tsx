@@ -15,20 +15,8 @@ const EpisodesModal: React.FC<EpisodesModalProps> = ({
   onSelectEpisode,
   onClose
 }) => {
-  // Group episodes by collection title
-  const collections = episodes.reduce((acc, episode) => {
-    const collectionTitle = episode.collection_title;
-    if (!acc[collectionTitle]) {
-      acc[collectionTitle] = [];
-    }
-    acc[collectionTitle].push(episode);
-    return acc;
-  }, {} as Record<string, VideoData[]>);
-
-  // Sort episodes within each collection by display_order
-  Object.values(collections).forEach(collectionEpisodes => {
-    collectionEpisodes.sort((a, b) => a.display_order - b.display_order);
-  });
+  // Sort episodes by display_order
+  const sortedEpisodes = [...episodes].sort((a, b) => a.display_order - b.display_order);
 
   return (
     <div className="fixed inset-0 bg-black/90 z-50 flex items-end">
@@ -55,7 +43,7 @@ const EpisodesModal: React.FC<EpisodesModalProps> = ({
         {/* Episodes grid */}
         <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(75vh - 5rem)' }}>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-            {episodes.map((episode) => {
+            {sortedEpisodes.map((episode) => {
               const isCurrentEpisode = episode.content_id === currentEpisode.content_id;
               
               return (

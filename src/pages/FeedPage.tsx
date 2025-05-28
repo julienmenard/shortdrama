@@ -48,7 +48,9 @@ const VideoFeedItem = ({
   const navigate = useNavigate();
   
   // Filter videos to only include those from the same collection as the current video
-  const sameCollectionVideos = allVideos.filter(v => v.collection_title === video.collection_title);
+  const sameCollectionVideos = allVideos
+    .filter(v => v.collection_title === video.collection_title)
+    .sort((a, b) => a.display_order - b.display_order); // Sort by display_order
   
   // Handle swipe gestures
   const bind = useGesture(
@@ -185,7 +187,7 @@ const VideoFeedItem = ({
             <div className="mt-2 pt-2 border-t border-gray-700">
               <p className="text-blue-400 font-bold mb-1">Episodes in "{video.collection_title}":</p>
               <div className="max-h-32 overflow-y-auto bg-black/30 rounded p-2">
-                {sameCollectionVideos.map((ep, idx) => (
+                {sameCollectionVideos.map((ep) => (
                   <div 
                     key={ep.content_id} 
                     className={`text-xs mb-1 p-1 rounded ${
