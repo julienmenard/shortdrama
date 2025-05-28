@@ -151,15 +151,17 @@ const VideoGrid: React.FC<VideoGridProps> = ({ onSelectVideo, rubricId, rubrics 
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent">
+              <div className="absolute top-3 left-3 bg-gray-800/70 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full flex items-center">
+                <Play className="w-3.5 h-3.5 mr-1.5" />
+                78.9M
+              </div>
               <div className="absolute top-3 right-3 bg-pink-600 text-white text-xs px-2 py-1 rounded-full">
                 {t('common.trending')}
               </div>
-              <div className="absolute bottom-0 left-0 w-full p-4">
-                <h2 className="text-white text-xl font-bold mb-1">{featuredVideo.title}</h2>
-                <div className="flex items-center">
-                  <div className="bg-pink-600 rounded-full w-10 h-10 flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white fill-white" />
-                  </div>
+              <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-end">
+                <h2 className="text-white text-2xl font-bold">{featuredVideo.title}</h2>
+                <div className="bg-pink-500 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+                  <Play className="w-5 h-5 text-white fill-white" />
                 </div>
               </div>
             </div>
@@ -205,8 +207,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({ onSelectVideo, rubricId, rubrics 
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-end">
               <h2 className="text-white text-2xl font-bold">{featuredVideo.title}</h2>
-              <div className="bg-pink-500 rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
-                <Play className="w-7 h-7 text-white fill-white" />
+              <div className="bg-pink-500 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
+                <Play className="w-5 h-5 text-white fill-white" />
               </div>
             </div>
           </div>
