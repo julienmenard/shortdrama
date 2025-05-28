@@ -36,17 +36,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const userInfoResponse = await getUserInfo(parseInt(userId));
           
           if (userInfoResponse.error === 0 && userInfoResponse.data && userInfoResponse.data.length > 0) {
-            setUser(userInfoResponse.data[0]);
+            const userData = userInfoResponse.data[0];
+            setUser(userData);
             setIsAuthenticated(true);
+            
+            // Store username in localStorage
+            if (userData.firstname) {
+              localStorage.setItem('username', userData.firstname);
+            } else if (userData.msisdn) {
+              localStorage.setItem('username', userData.msisdn);
+            } else if (userData.email) {
+              localStorage.setItem('username', userData.email);
+            }
           } else {
             // Invalid session or API error, clear storage and show error
             localStorage.removeItem('userId');
+            localStorage.removeItem('username');
             console.warn('Session validation failed:', userInfoResponse.message || 'Unknown error');
             setError('Your session has expired. Please log in again.');
           }
         } catch (error) {
           console.error('Session check error:', error);
           localStorage.removeItem('userId');
+          localStorage.removeItem('username');
           setError('Connection error. Please check your network and try again.');
         } finally {
           setIsLoading(false);
@@ -105,8 +117,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userInfoResponse = await getUserInfo(authResponse.data.user_id);
       
       if (userInfoResponse.error === 0 && userInfoResponse.data && userInfoResponse.data.length > 0) {
-        setUser(userInfoResponse.data[0]);
+        const userData = userInfoResponse.data[0];
+        setUser(userData);
         setIsAuthenticated(true);
+        
+        // Store username in localStorage
+        if (userData.firstname) {
+          localStorage.setItem('username', userData.firstname);
+        } else if (userData.msisdn) {
+          localStorage.setItem('username', userData.msisdn);
+        } else if (userData.email) {
+          localStorage.setItem('username', userData.email);
+        }
+        
         return true;
       } else {
         setError(userInfoResponse.message || 'Failed to retrieve user information.');
@@ -123,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     localStorage.removeItem('userId');
+    localStorage.removeItem('username');
     setUser(null);
     setIsAuthenticated(false);
   };

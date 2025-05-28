@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut, User, Settings, CreditCard, Bell, Shield, HelpCircle, ChevronRight, ChevronLeft, Plus, Minus, Languages, Moon, Sun } from 'lucide-react';
 import BottomNavigation from '../components/BottomNavigation';
@@ -64,8 +64,25 @@ const ProfilePage: React.FC = () => {
   const [showHelpSupport, setShowHelpSupport] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [showSubscription, setShowSubscription] = useState(false);
+  const [username, setUsername] = useState<string>('');
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    // Get username from localStorage or from user object
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    } else if (user?.firstname) {
+      setUsername(user.firstname);
+    } else if (user?.msisdn) {
+      setUsername(user.msisdn);
+    } else if (user?.email) {
+      setUsername(user.email);
+    } else {
+      setUsername(t('profile.anonymous'));
+    }
+  }, [user, t]);
 
   const handleLogout = () => {
     logout();
@@ -74,9 +91,6 @@ const ProfilePage: React.FC = () => {
 
   // Get the primary identifier (phone or email)
   const primaryIdentifier = user?.msisdn || user?.email || t('profile.anonymous');
-  
-  // Use the user's first name or the primary identifier for display
-  const displayName = user?.firstname || primaryIdentifier;
 
   const menuItems = [
     { icon: User, label: t('profile.accountDetails'), action: () => console.log('Account details clicked') },
@@ -118,7 +132,7 @@ const ProfilePage: React.FC = () => {
           </div>
           <div className="ml-4">
             <h1 className="text-xl font-bold text-white">
-              {displayName}
+              {username}
             </h1>
             <p className="text-white text-opacity-80">
               {primaryIdentifier}
