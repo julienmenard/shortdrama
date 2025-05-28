@@ -84,7 +84,7 @@ const VideoFeedItem = ({
       aspectratio: '16:9',
       mute: !isActive,
       autostart: isActive,
-      repeat: true,
+      repeat: false, // Changed from true to false to enable complete event
       controls: true,
       stretching: 'fill',
       playbackRateControls: false,
@@ -108,12 +108,23 @@ const VideoFeedItem = ({
       }
     });
     
+    // Add event listener for video completion
+    player.on('complete', () => {
+      console.log('Video completed, moving to next video');
+      if (isActive && hasNext && nextVideo) {
+        // Add a small delay to make the transition smoother
+        setTimeout(() => {
+          onNext();
+        }, 500);
+      }
+    });
+    
     setPlayerInstance(player);
     
     return () => {
       player.remove();
     };
-  }, [video, videoRef]);
+  }, [video, videoRef, isActive, hasNext, nextVideo, onNext]);
   
   // Handle active state changes
   useEffect(() => {
@@ -353,12 +364,24 @@ const FeedPage = () => {
   const handleNext = () => {
     if (currentVideoIndex < videos.length - 1) {
       setCurrentVideoIndex(currentVideoIndex + 1);
+      
+      // Scroll to the next video with animation
+      const nextVideoElement = document.querySelector(`[data-index="${currentVideoIndex + 1}"]`);
+      if (nextVideoElement) {
+        nextVideoElement.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
   const handlePrev = () => {
     if (currentVideoIndex > 0) {
       setCurrentVideoIndex(currentVideoIndex - 1);
+      
+      // Scroll to the previous video with animation
+      const prevVideoElement = document.querySelector(`[data-index="${currentVideoIndex - 1}"]`);
+      if (prevVideoElement) {
+        prevVideoElement.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
