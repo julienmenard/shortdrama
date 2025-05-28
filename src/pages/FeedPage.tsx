@@ -26,7 +26,8 @@ const VideoFeedItem = ({
   hasPrev,
   allVideos,
   nextVideo,
-  currentIndex
+  currentIndex,
+  apiRequestUrl
 }: { 
   video: VideoData;
   isActive: boolean;
@@ -38,6 +39,7 @@ const VideoFeedItem = ({
   allVideos: VideoData[];
   nextVideo: VideoData | null;
   currentIndex: number;
+  apiRequestUrl: string | null;
 }) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const [playerInstance, setPlayerInstance] = useState<any>(null);
@@ -203,6 +205,16 @@ const VideoFeedItem = ({
                 ))}
               </div>
             </div>
+            
+            {/* Display API request URL */}
+            {apiRequestUrl && (
+              <div className="mt-2 pt-2 border-t border-gray-700">
+                <p className="text-yellow-400 font-bold mb-1">API Request:</p>
+                <div className="bg-black/30 rounded p-2 overflow-x-auto">
+                  <p className="text-xs text-gray-300 break-all font-mono">{apiRequestUrl}</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -322,6 +334,7 @@ const FeedPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoData | null>(null);
+  const [apiRequestUrl, setApiRequestUrl] = useState<string | null>(null);
   
   useEffect(() => {
     const loadVideos = async () => {
@@ -329,6 +342,35 @@ const FeedPage = () => {
         setLoading(true);
         setError(null);
         console.log('FeedPage - Fetching videos from Galaxy API');
+        
+        // Create and capture the API URL before making the request
+        const GALAXY_API_BASE_URL = 'https://galaxy-api.galaxydve.com';
+        const GALAXY_API_KEY = 'api_key_iatest';
+        const GALAXY_API_SECRET = 'GaLxAiDviTS12*';
+        const GALAXY_CAMPAIGN_ID = '5027';
+        const GALAXY_SERVICE_ID = '39';
+        const GALAXY_COUNTRY_CODE = 'gb';
+        const GALAXY_LANGUAGE_CODE = 'en';
+        
+        const params = new URLSearchParams({
+          api_key: GALAXY_API_KEY,
+          api_secret_key: GALAXY_API_SECRET,
+          country_code: GALAXY_COUNTRY_CODE,
+          language_code: GALAXY_LANGUAGE_CODE,
+          campaign_id: GALAXY_CAMPAIGN_ID,
+          service_id: GALAXY_SERVICE_ID,
+          content_type: 'movie,tv_movie,series,series_episode',
+          preview: 'true',
+          asset: 'true',
+          delivery: 'true',
+          without_token: 'true',
+          itemsPerPage: '100',
+          page: '1'
+        });
+        
+        const fullApiUrl = `${GALAXY_API_BASE_URL}/publishing-content-list?${params.toString()}`;
+        setApiRequestUrl(fullApiUrl);
+        
         const response = await fetchVideos();
         console.log('FeedPage - Videos received:', response.data.data.length);
         
@@ -450,6 +492,7 @@ const FeedPage = () => {
               allVideos={videos}
               nextVideo={getNextVideo(index)}
               currentIndex={currentVideoIndex}
+              apiRequestUrl={apiRequestUrl}
             />
           </div>
         ))}
