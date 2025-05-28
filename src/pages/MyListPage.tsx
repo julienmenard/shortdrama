@@ -5,6 +5,7 @@ import { useWatchHistory } from '../contexts/WatchHistoryContext';
 import { VideoData } from '../types';
 import VideoCard from '../components/VideoCard';
 import BottomNavigation from '../components/BottomNavigation';
+import Logo from '../components/Logo';
 import { Film, History, Pencil, X, Check, Trash2, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -198,7 +199,7 @@ const MyListPage = () => {
       <div className="sticky top-0 z-10 bg-black bg-opacity-95">
         <div className="px-4 pt-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-pink-500">ShortDrama</h1>
+            <Logo />
             {isEditing && (
               <button
                 onClick={toggleEdit}
