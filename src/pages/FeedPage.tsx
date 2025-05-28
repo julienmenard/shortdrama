@@ -180,6 +180,27 @@ const VideoFeedItem = ({
             {nextVideo && (
               <p className="text-green-500">Next: {nextVideo.title}</p>
             )}
+            
+            {/* Display all episodes of the same collection */}
+            <div className="mt-2 pt-2 border-t border-gray-700">
+              <p className="text-blue-400 font-bold mb-1">Episodes in "{video.collection_title}":</p>
+              <div className="max-h-32 overflow-y-auto bg-black/30 rounded p-2">
+                {sameCollectionVideos.map((ep, idx) => (
+                  <div 
+                    key={ep.content_id} 
+                    className={`text-xs mb-1 p-1 rounded ${
+                      ep.content_id === video.content_id 
+                        ? 'bg-pink-900/50 text-white' 
+                        : ep.content_id === nextVideo?.content_id 
+                          ? 'bg-green-900/50 text-green-300'
+                          : 'text-gray-400'
+                    }`}
+                  >
+                    {ep.display_order}. {ep.title}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
