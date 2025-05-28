@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth, AuthProvider } from './contexts/AuthContext';
 import { SavedVideosProvider } from './contexts/SavedVideosContext';
@@ -12,7 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import MyListPage from './pages/MyListPage';
 import LandingPage from './pages/LandingPage';
 import { initializeSnowplow, trackUserInteraction } from './services/snowplow';
-import { initNotifications } from './services/notificationService';
+import { initNotifications, forceTestNotification } from './services/notificationService';
 import './i18n';
 import './index.css';
 
@@ -76,13 +76,34 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 // Initialize notification system after login
 const NotificationInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
+  const [initialized, setInitialized] = useState(false);
   
   useEffect(() => {
-    if (isAuthenticated) {
-      // Initialize notifications if user is logged in
-      initNotifications();
+    if (isAuthenticated && !initialized) {
+      console.log('Authentication detected, initializing notifications');
+      
+      // Check if the browser supports notifications
+      if (!('Notification' in window)) {
+        console.log('This browser does not support notifications');
+        return;
+      }
+      
+      // Initialize notifications with a delay to ensure DOM is ready
+      setTimeout(() => {
+        const notificationsInitialized = initNotifications();
+        setInitialized(true);
+        console.log('Notifications initialized:', notificationsInitialized);
+        
+        // If we already have permission, send a test notification
+        if (Notification.permission === 'granted') {
+          console.log('Permission already granted, sending test notification');
+          setTimeout(() => {
+            forceTestNotification();
+          }, 2000);
+        }
+      }, 1000);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, initialized]);
   
   return <>{children}</>;
 };

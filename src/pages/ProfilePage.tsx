@@ -12,8 +12,10 @@ import HelpSupport from './HelpSupport';
 import { 
   requestNotificationPermission, 
   enableNotifications, 
+  disableNotifications,
   isNotificationsEnabled,
-  initNotifications
+  initNotifications,
+  forceTestNotification
 } from '../services/notificationService';
 
 const LanguageSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -69,19 +71,21 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
   const [requestStatus, setRequestStatus] = useState<string>('pending'); // pending, granted, denied
   const { t } = useTranslation();
 
+  useEffect(() => {
+    // Check current notification permission on component mount
+    if (Notification.permission === 'granted') {
+      setRequestStatus('granted');
+    } else if (Notification.permission === 'denied') {
+      setRequestStatus('denied');
+    }
+  }, []);
+
   const handleRequestPermission = async () => {
     try {
       // Check if the browser supports notifications
       if (!('Notification' in window)) {
         console.log('This browser does not support notifications');
         setRequestStatus('unsupported');
-        return;
-      }
-
-      // Check if permission is already granted
-      if (Notification.permission === 'granted') {
-        enableNotifications();
-        setRequestStatus('granted');
         return;
       }
 
@@ -92,11 +96,29 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
       // Enable notifications if permission was granted
       if (permission === 'granted') {
         enableNotifications();
+        
+        // Force a test notification immediately
+        setTimeout(() => {
+          forceTestNotification();
+        }, 1000);
       }
     } catch (error) {
       console.error('Error requesting notification permission:', error);
       setRequestStatus('error');
     }
+  };
+
+  const handleToggleNotifications = () => {
+    if (isNotificationsEnabled()) {
+      disableNotifications();
+    } else {
+      enableNotifications();
+      // Force a test notification
+      setTimeout(() => {
+        forceTestNotification();
+      }, 1000);
+    }
+    onClose();
   };
 
   return (
@@ -140,16 +162,35 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
               <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Bell className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Notifications Enabled!</h3>
+              <h3 className="text-lg font-bold text-white mb-2">Notification Status</h3>
               <p className="text-gray-300 mb-4">
-                You'll now receive notifications about new episodes and important updates every few minutes.
+                {isNotificationsEnabled() 
+                  ? "Notifications are currently enabled. You'll receive updates every few minutes."
+                  : "Notifications are currently disabled, but permission is granted."}
               </p>
               <button
-                onClick={onClose}
-                className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                onClick={handleToggleNotifications}
+                className="bg-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-pink-700 transition-colors mb-3"
               >
-                Close
+                {isNotificationsEnabled() ? "Disable Notifications" : "Enable Notifications"}
               </button>
+              <br />
+              <button
+                onClick={() => {
+                  forceTestNotification();
+                }}
+                className="bg-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                Send Test Notification
+              </button>
+              <div className="mt-4">
+                <button
+                  onClick={onClose}
+                  className="bg-gray-700 text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
           
@@ -241,7 +282,9 @@ const ProfilePage: React.FC = () => {
     }
     
     // Check if notifications are already enabled
-    setNotificationsEnabled(isNotificationsEnabled());
+    const notifEnabled = isNotificationsEnabled();
+    setNotificationsEnabled(notifEnabled);
+    console.log('Notifications enabled:', notifEnabled);
     
     // Initialize notification system if permission is already granted
     initNotifications();
