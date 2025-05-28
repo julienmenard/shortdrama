@@ -84,6 +84,37 @@
       transform: translateY(0);
     }
   }
+
+  /* Blood animation */
+  @keyframes drip {
+    0% {
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+      background-position: center 0%;
+    }
+    15% {
+      clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%);
+    }
+    30% {
+      clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+      background-position: center 20%;
+    }
+    60% {
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
+      background-position: center 40%;
+    }
+    80% {
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 0 90%);
+      background-position: center 60%;
+    }
+    100% {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      background-position: center 80%;
+    }
+  }
+
+  .animate-blood {
+    animation: drip 2.5s ease-in-out forwards;
+  }
 }
 
 [dir="rtl"] {
@@ -101,6 +132,17 @@
   transform: scale(1.05);
 }
 
+/* Blood effect styling */
+.blood-drip {
+  background: linear-gradient(180deg, #ff0844 0%, #a90000 100%);
+  opacity: 0.9;
+  transform-origin: top center;
+}
+
+.heartblood-logo {
+  filter: drop-shadow(0 0 8px rgba(255, 45, 85, 0.6));
+}
+
 /* Make video cards transparent except featured one */
 .grid .relative.bg-gray-800 {
   background-color: transparent;
@@ -109,4 +151,32 @@
 /* Ensure play button is a perfect circle */
 .bg-pink-500.rounded-full.w-12.h-12.flex.items-center.justify-center.shadow-lg {
   aspect-ratio: 1 / 1 !important;
+}
+
+/* Blood droplet animation */
+@keyframes droplet {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.heartblood-logo:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background-color: #ff0844;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: droplet 3s ease-in-out infinite;
+  animation-delay: 2.2s;
+  filter: drop-shadow(0 0 5px rgba(255, 8, 68, 0.8));
 }
