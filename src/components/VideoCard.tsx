@@ -46,7 +46,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick, isEditing = false
         {!isEditing && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <div className="bg-pink-500 rounded-full p-3 transform translate-y-4 hover:translate-y-0 transition-transform duration-300">
-              <Play className="w-6 h-6 text-white\" fill="white" />
+              <Play className="w-6 h-6 text-white\" fill=\"white" />
             </div>
           </div>
         )}
