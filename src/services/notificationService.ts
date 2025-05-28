@@ -125,6 +125,7 @@ export const sendFakeNotification = (): void => {
   try {
     console.log('Sending notification:', notificationContent.title);
     
+    // Send browser notification
     const notification = new Notification(notificationContent.title, {
       body: notificationContent.body,
       icon: notificationContent.icon,
@@ -140,6 +141,9 @@ export const sendFakeNotification = (): void => {
       notification.close();
     };
     
+    // Also send in-app notification
+    showInAppNotification(notificationContent.title, notificationContent.body, notificationContent.icon);
+    
     // Update last notification time
     const settings = getNotificationSettings();
     settings.lastNotificationTime = Date.now();
@@ -148,7 +152,24 @@ export const sendFakeNotification = (): void => {
     console.log('Sent notification:', notificationContent.title);
   } catch (error) {
     console.error('Error sending notification:', error);
+    
+    // If browser notification fails, still try to show in-app notification
+    showInAppNotification(notificationContent.title, notificationContent.body, notificationContent.icon);
   }
+};
+
+/**
+ * Show an in-app notification that appears at the top of the screen (iOS style)
+ */
+export const showInAppNotification = (title: string, body: string, icon?: string): void => {
+  console.log('Showing in-app notification:', title);
+  
+  // Create and dispatch a custom event to show the in-app notification
+  const event = new CustomEvent('in-app-notification', {
+    detail: { title, body, icon }
+  });
+  
+  window.dispatchEvent(event);
 };
 
 /**
@@ -180,6 +201,7 @@ export const enableNotifications = (): boolean => {
   // Send immediate welcome notification
   try {
     console.log('Sending welcome notification');
+    // Browser notification
     const notification = new Notification('ShortDrama Notifications Enabled', {
       body: 'You will now receive notifications about new episodes and updates.',
       icon: '/src/pages/logo/heartblood.png',
@@ -190,8 +212,21 @@ export const enableNotifications = (): boolean => {
       window.focus();
       notification.close();
     };
+    
+    // In-app notification
+    showInAppNotification(
+      'ShortDrama Notifications Enabled',
+      'You will now receive notifications about new episodes and updates.',
+      '/src/pages/logo/heartblood.png'
+    );
   } catch (error) {
     console.error('Error sending welcome notification:', error);
+    // Try in-app notification as fallback
+    showInAppNotification(
+      'ShortDrama Notifications Enabled',
+      'You will now receive notifications about new episodes and updates.',
+      '/src/pages/logo/heartblood.png'
+    );
   }
   
   // Start the notification scheduler after a brief delay
@@ -214,6 +249,13 @@ export const disableNotifications = (): void => {
   
   saveNotificationSettings(settings);
   stopNotificationScheduler();
+  
+  // Show in-app notification that notifications are disabled
+  showInAppNotification(
+    'Notifications Disabled',
+    'You will no longer receive notifications from ShortDrama.',
+    '/src/pages/logo/heartblood.png'
+  );
 };
 
 /**
@@ -283,29 +325,35 @@ export const sendVideoNotification = (video: VideoData): void => {
     return;
   }
   
-  if (Notification.permission !== 'granted') {
-    console.log('Video notification not sent: permission not granted');
-    return;
-  }
+  const title = `Now Watching: ${video.title}`;
+  const body = video.description.substring(0, 100) + '...';
+  const icon = video.assets.cover[0]?.url || '/src/pages/logo/heartblood.png';
   
   try {
-    console.log('Sending video notification for:', video.title);
+    if (Notification.permission === 'granted') {
+      console.log('Sending video notification for:', video.title);
+      
+      const notification = new Notification(title, {
+        body: body,
+        icon: icon,
+        requireInteraction: true,
+        tag: 'shortdrama-video'
+      });
+      
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+    }
     
-    const notification = new Notification(`Now Watching: ${video.title}`, {
-      body: video.description.substring(0, 100) + '...',
-      icon: video.assets.cover[0]?.url || '/src/pages/logo/heartblood.png',
-      requireInteraction: true,
-      tag: 'shortdrama-video'
-    });
-    
-    notification.onclick = () => {
-      window.focus();
-      notification.close();
-    };
+    // Always show in-app notification regardless of browser notification permission
+    showInAppNotification(title, body, icon);
     
     console.log('Video notification sent successfully');
   } catch (error) {
     console.error('Error sending video notification:', error);
+    // Fallback to in-app notification only
+    showInAppNotification(title, body, icon);
   }
 };
 
@@ -314,24 +362,30 @@ export const forceTestNotification = (): void => {
   try {
     console.log('Forcing test notification');
     
-    if (Notification.permission !== 'granted') {
-      console.log('Cannot send test notification: permission not granted');
-      return;
+    const title = 'Test Notification';
+    const body = 'This is a test notification from ShortDrama';
+    const icon = '/src/pages/logo/heartblood.png';
+    
+    if (Notification.permission === 'granted') {
+      const notification = new Notification(title, {
+        body: body,
+        icon: icon,
+        requireInteraction: true
+      });
+      
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
     }
     
-    const notification = new Notification('Test Notification', {
-      body: 'This is a test notification from ShortDrama',
-      icon: '/src/pages/logo/heartblood.png',
-      requireInteraction: true
-    });
-    
-    notification.onclick = () => {
-      window.focus();
-      notification.close();
-    };
+    // Always show in-app notification
+    showInAppNotification(title, body, icon);
     
     console.log('Test notification sent');
   } catch (error) {
     console.error('Error sending test notification:', error);
+    // Fallback to in-app notification
+    showInAppNotification('Test Notification', 'This is a test notification from ShortDrama', '/src/pages/logo/heartblood.png');
   }
 };

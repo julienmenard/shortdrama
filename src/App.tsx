@@ -13,6 +13,7 @@ import MyListPage from './pages/MyListPage';
 import LandingPage from './pages/LandingPage';
 import { initializeSnowplow, trackUserInteraction } from './services/snowplow';
 import { initNotifications, forceTestNotification } from './services/notificationService';
+import NotificationContainer from './components/NotificationContainer';
 import './i18n';
 import './index.css';
 
@@ -135,6 +136,7 @@ function App() {
             <WatchHistoryProvider>
               <NotificationInitializer>
                 <AppRoutes />
+                <NotificationContainer />
               </NotificationInitializer>
             </WatchHistoryProvider>
           </SavedVideosProvider>
