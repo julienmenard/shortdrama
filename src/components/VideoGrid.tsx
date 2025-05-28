@@ -160,8 +160,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({ onSelectVideo, rubricId, rubrics 
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-end">
                 <h2 className="text-white text-2xl font-bold">{featuredVideo.title}</h2>
-                <div className="bg-pink-500 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
-                  <Play className="w-5 h-5 text-white fill-white" />
+                <div className="bg-pink-500 rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+                  <Play className="w-6 h-6 text-white fill-white" />
                 </div>
               </div>
             </div>
@@ -207,8 +207,8 @@ const VideoGrid: React.FC<VideoGridProps> = ({ onSelectVideo, rubricId, rubrics 
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between items-end">
               <h2 className="text-white text-2xl font-bold">{featuredVideo.title}</h2>
-              <div className="bg-pink-500 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
-                <Play className="w-5 h-5 text-white fill-white" />
+              <div className="bg-pink-500 rounded-full w-12 h-12 flex items-center justify-center shadow-lg">
+                <Play className="w-6 h-6 text-white fill-white" />
               </div>
             </div>
           </div>
