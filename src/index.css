@@ -105,3 +105,8 @@
 .grid .relative.bg-gray-800 {
   background-color: transparent;
 }
+
+/* Ensure play button is a perfect circle */
+.bg-pink-500.rounded-full.w-12.h-12.flex.items-center.justify-center.shadow-lg {
+  aspect-ratio: 1 / 1 !important;
+}
