@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { LogOut, User, Settings, CreditCard, Bell, Shield, HelpCircle, ChevronRight, ChevronLeft, Plus, Minus, Languages, Moon, Sun } from 'lucide-react';
 import BottomNavigation from '../components/BottomNavigation';
+import Logo from '../components/Logo';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
@@ -106,6 +107,10 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[rgb(var(--background))] pb-20">
+      <div className="px-4 pt-4 mb-4 flex justify-center">
+        <Logo size="medium" />
+      </div>
+      
       <div className="bg-gradient-to-r from-pink-600 to-purple-600 py-10 px-4">
         <div className="flex items-center">
           <div className="bg-white rounded-full w-20 h-20 flex items-center justify-center">
