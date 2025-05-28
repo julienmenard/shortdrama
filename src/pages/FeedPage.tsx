@@ -45,6 +45,9 @@ const VideoFeedItem = ({
   const [showEpisodesModal, setShowEpisodesModal] = useState(false);
   const navigate = useNavigate();
   
+  // Filter videos to only include those from the same collection as the current video
+  const sameCollectionVideos = allVideos.filter(v => v.collection_title === video.collection_title);
+  
   // Handle swipe gestures
   const bind = useGesture(
     {
@@ -260,7 +263,7 @@ const VideoFeedItem = ({
       {/* Episodes Modal */}
       {showEpisodesModal && (
         <EpisodesModal
-          episodes={allVideos}
+          episodes={sameCollectionVideos}
           currentEpisode={video}
           onSelectEpisode={(episode) => {
             setShowEpisodesModal(false);
