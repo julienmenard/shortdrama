@@ -250,7 +250,8 @@ const MyListPage = () => {
                 )}
               </button>
             </div>
-            {!isEditing && (activeTab === 'mylist' && savedVideos.length > 0 || activeTab === 'history' && watchHistory.length > 0) && (
+            {/* Only show edit button for My List, not for History */}
+            {!isEditing && activeTab === 'mylist' && savedVideos.length > 0 && (
               <button
                 onClick={toggleEdit}
                 className="p-2 text-white hover:text-pink-500 transition-colors"
