@@ -166,13 +166,6 @@ const VideoFeedItem = ({
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/80 to-transparent">
         <div className="flex flex-col">
-          {/* Collection Title */}
-          <div className="mb-1">
-            <h2 className="text-pink-500 font-bold text-lg line-clamp-1">
-              {video.collection_title}
-            </h2>
-          </div>
-          
           <div className="flex items-center">
             <button 
               onClick={() => navigate('/')}
