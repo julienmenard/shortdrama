@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import MyListPage from './pages/MyListPage';
 import LandingPage from './pages/LandingPage';
 import { initializeSnowplow, trackUserInteraction } from './services/snowplow';
+import { initNotifications } from './services/notificationService';
 import './i18n';
 import './index.css';
 
@@ -72,6 +73,20 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   return !isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 };
 
+// Initialize notification system after login
+const NotificationInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Initialize notifications if user is logged in
+      initNotifications();
+    }
+  }, [isAuthenticated]);
+  
+  return <>{children}</>;
+};
+
 const AppRoutes = () => {
   return (
     <>
@@ -97,7 +112,9 @@ function App() {
         <AuthProvider>
           <SavedVideosProvider>
             <WatchHistoryProvider>
-              <AppRoutes />
+              <NotificationInitializer>
+                <AppRoutes />
+              </NotificationInitializer>
             </WatchHistoryProvider>
           </SavedVideosProvider>
         </AuthProvider>

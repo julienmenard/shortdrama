@@ -9,6 +9,7 @@ import { useWatchHistory } from '../contexts/WatchHistoryContext';
 import ShareModal from '../components/ShareModal';
 import EpisodesModal from '../components/EpisodesModal';
 import { trackContentConsumption } from '../services/snowplow';
+import { sendVideoNotification } from '../services/notificationService';
 
 declare global {
   interface Window {
@@ -138,6 +139,10 @@ const VideoPlayerPage = () => {
         if (!videoStarted) {
           // Add to watch history when playback starts
           addToWatchHistory(videoToPlay);
+          
+          // Send a notification about the video if permissions granted
+          sendVideoNotification(videoToPlay);
+          
           setVideoStarted(true);
         }
       });

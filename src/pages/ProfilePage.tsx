@@ -9,6 +9,12 @@ import { useTheme } from '../contexts/ThemeContext';
 import SubscriptionView from '../components/SubscriptionView';
 import PrivacyPolicy from './PrivacyPolicy';
 import HelpSupport from './HelpSupport';
+import { 
+  requestNotificationPermission, 
+  enableNotifications, 
+  isNotificationsEnabled,
+  initNotifications
+} from '../services/notificationService';
 
 const LanguageSelector: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { i18n } = useTranslation();
@@ -63,7 +69,7 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
   const [requestStatus, setRequestStatus] = useState<string>('pending'); // pending, granted, denied
   const { t } = useTranslation();
 
-  const requestNotificationPermission = async () => {
+  const handleRequestPermission = async () => {
     try {
       // Check if the browser supports notifications
       if (!('Notification' in window)) {
@@ -74,20 +80,18 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
 
       // Check if permission is already granted
       if (Notification.permission === 'granted') {
+        enableNotifications();
         setRequestStatus('granted');
         return;
       }
 
       // Request permission
-      const permission = await Notification.requestPermission();
+      const permission = await requestNotificationPermission();
       setRequestStatus(permission);
       
-      // Show a test notification if permission was granted
+      // Enable notifications if permission was granted
       if (permission === 'granted') {
-        new Notification('ShortDrama Notifications Enabled', {
-          body: 'You will now receive notifications about new episodes and updates.',
-          icon: '/src/pages/logo/heartblood.png'
-        });
+        enableNotifications();
       }
     } catch (error) {
       console.error('Error requesting notification permission:', error);
@@ -116,7 +120,7 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
               </p>
               <div className="flex space-x-3">
                 <button
-                  onClick={requestNotificationPermission}
+                  onClick={handleRequestPermission}
                   className="flex-1 bg-pink-600 text-white py-3 rounded-lg font-medium hover:bg-pink-700 transition-colors"
                 >
                   Enable Notifications
@@ -138,7 +142,7 @@ const NotificationPermissionDialog: React.FC<{ onClose: () => void }> = ({ onClo
               </div>
               <h3 className="text-lg font-bold text-white mb-2">Notifications Enabled!</h3>
               <p className="text-gray-300 mb-4">
-                You'll now receive notifications about new episodes and important updates.
+                You'll now receive notifications about new episodes and important updates every few minutes.
               </p>
               <button
                 onClick={onClose}
@@ -217,6 +221,7 @@ const ProfilePage: React.FC = () => {
   const [showSubscription, setShowSubscription] = useState(false);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [username, setUsername] = useState<string>('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
 
@@ -234,6 +239,12 @@ const ProfilePage: React.FC = () => {
     } else {
       setUsername(t('profile.anonymous'));
     }
+    
+    // Check if notifications are already enabled
+    setNotificationsEnabled(isNotificationsEnabled());
+    
+    // Initialize notification system if permission is already granted
+    initNotifications();
   }, [user, t]);
 
   const handleLogout = () => {
@@ -246,7 +257,12 @@ const ProfilePage: React.FC = () => {
 
   const menuItems = [
     { icon: CreditCard, label: t('profile.subscription'), action: () => setShowSubscription(true) },
-    { icon: Bell, label: t('profile.notifications'), action: () => setShowNotificationDialog(true) },
+    { 
+      icon: Bell, 
+      label: t('profile.notifications'), 
+      action: () => setShowNotificationDialog(true),
+      status: notificationsEnabled ? 'Enabled' : 'Disabled'
+    },
     { icon: Languages, label: t('profile.language'), action: () => setShowLanguageSelector(true) },
     { icon: theme === 'dark' ? Sun : Moon, label: t('profile.theme'), action: toggleTheme },
     { icon: Shield, label: t('profile.privacy'), action: () => setShowPrivacyPolicy(true) },
@@ -306,7 +322,16 @@ const ProfilePage: React.FC = () => {
                   <item.icon className="w-5 h-5 text-gray-400 mr-3" />
                   <span>{item.label}</span>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-500" />
+                <div className="flex items-center">
+                  {item.status && (
+                    <span className={`text-sm mr-2 ${
+                      item.status === 'Enabled' ? 'text-green-500' : 'text-gray-500'
+                    }`}>
+                      {item.status}
+                    </span>
+                  )}
+                  <ChevronRight className="w-5 h-5 text-gray-500" />
+                </div>
               </button>
               {index < menuItems.length - 1 && (
                 <div className="w-full h-px bg-gray-700 mx-auto" />
@@ -332,7 +357,10 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {showNotificationDialog && (
-        <NotificationPermissionDialog onClose={() => setShowNotificationDialog(false)} />
+        <NotificationPermissionDialog onClose={() => {
+          setShowNotificationDialog(false);
+          setNotificationsEnabled(isNotificationsEnabled());
+        }} />
       )}
 
       <BottomNavigation />
