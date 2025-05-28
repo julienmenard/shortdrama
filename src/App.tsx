@@ -9,6 +9,7 @@ import FeedPage from './pages/FeedPage';
 import VideoPlayerPage from './pages/VideoPlayerPage';
 import ProfilePage from './pages/ProfilePage';
 import MyListPage from './pages/MyListPage';
+import LandingPage from './pages/LandingPage';
 import { initializeSnowplow, trackUserInteraction } from './services/snowplow';
 import './i18n';
 import './index.css';
@@ -76,6 +77,7 @@ const AppRoutes = () => {
       <PageTracker />
       <Routes>
         <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/landing" element={<PublicRoute><LandingPage /></PublicRoute>} />
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/for-you" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
         <Route path="/video/:id" element={<ProtectedRoute><VideoPlayerPage /></ProtectedRoute>} />
