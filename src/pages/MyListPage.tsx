@@ -9,7 +9,7 @@ import { Film, History, Pencil, X, Check, Trash2, Bookmark } from 'lucide-react'
 import { useTranslation } from 'react-i18next';
 
 const MyListPage = () => {
-  const { savedVideos, removeFromSavedVideos } = useSavedVideos();
+  const { savedVideos, removeFromSavedVideos, addToSavedVideos, isVideoSaved } = useSavedVideos();
   const { watchHistory, removeFromWatchHistory, clearWatchHistory, addToWatchHistory } = useWatchHistory();
   const [activeTab, setActiveTab] = useState<'mylist' | 'history'>('mylist');
   const [isEditing, setIsEditing] = useState(false);
@@ -65,7 +65,6 @@ const MyListPage = () => {
   };
 
   const handleSaveVideo = (video: VideoData) => {
-    const { addToSavedVideos, removeFromSavedVideos, isVideoSaved } = useSavedVideos();
     if (isVideoSaved(video.content_id)) {
       removeFromSavedVideos(video.content_id);
     } else {
@@ -131,7 +130,6 @@ const MyListPage = () => {
     return (
       <div className="space-y-4">
         {watchHistory.map((video) => {
-          const { isVideoSaved } = useSavedVideos();
           const isSaved = isVideoSaved(video.content_id);
           
           return (
