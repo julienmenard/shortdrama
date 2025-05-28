@@ -25,6 +25,7 @@ const VideoFeedItem = ({
   hasNext,
   hasPrev,
   allVideos,
+  nextVideo
 }: { 
   video: VideoData;
   isActive: boolean;
@@ -34,6 +35,7 @@ const VideoFeedItem = ({
   hasNext: boolean;
   hasPrev: boolean;
   allVideos: VideoData[];
+  nextVideo: VideoData | null;
 }) => {
   const videoRef = useRef<HTMLDivElement>(null);
   const [playerInstance, setPlayerInstance] = useState<any>(null);
@@ -143,16 +145,26 @@ const VideoFeedItem = ({
     >
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-20 p-4 bg-gradient-to-b from-black/80 to-transparent">
-        <div className="flex items-center">
-          <button 
-            onClick={() => navigate('/')}
-            className="text-white mr-4"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-white font-medium text-lg line-clamp-1">
-            {video.title}
-          </h1>
+        <div className="flex flex-col">
+          <div className="flex items-center">
+            <button 
+              onClick={() => navigate('/')}
+              className="text-white mr-4"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <h1 className="text-white font-medium text-lg line-clamp-1">
+              {video.title}
+            </h1>
+          </div>
+          
+          {/* Debug info for current and next video */}
+          <div className="mt-2 px-4 py-2 bg-black/50 rounded-lg text-sm">
+            <p className="text-pink-500">Current: {video.title}</p>
+            {nextVideo && (
+              <p className="text-green-500">Next: {nextVideo.title}</p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -349,6 +361,14 @@ const FeedPage = () => {
       setCurrentVideoIndex(currentVideoIndex - 1);
     }
   };
+
+  // Determine the next video
+  const getNextVideo = (currentIndex: number): VideoData | null => {
+    if (currentIndex < videos.length - 1) {
+      return videos[currentIndex + 1];
+    }
+    return null;
+  };
   
   return (
     <div className="h-screen bg-black overflow-hidden">
@@ -370,6 +390,7 @@ const FeedPage = () => {
               hasNext={index < videos.length - 1}
               hasPrev={index > 0}
               allVideos={videos}
+              nextVideo={getNextVideo(index)}
             />
           </div>
         ))}
