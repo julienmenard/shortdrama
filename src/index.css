@@ -100,3 +100,8 @@
 .logo-container img:hover {
   transform: scale(1.05);
 }
+
+/* Make video cards transparent except featured one */
+.grid .relative.bg-gray-800 {
+  background-color: transparent;
+}
