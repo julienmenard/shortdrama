@@ -267,12 +267,19 @@ const VideoFeedItem = ({
           currentEpisode={video}
           onSelectEpisode={(episode) => {
             setShowEpisodesModal(false);
-            const index = allVideos.findIndex(v => v.content_id === episode.content_id);
-            if (index !== -1) {
-              if (index > currentVideoIndex) {
-                onNext();
-              } else if (index < currentVideoIndex) {
-                onPrev();
+            // Find the index of the selected episode in the main videos array
+            const selectedIndex = allVideos.findIndex(v => v.content_id === episode.content_id);
+            if (selectedIndex !== -1) {
+              // Directly navigate to the selected episode index in the main feed
+              if (selectedIndex !== currentVideoIndex) {
+                const selectedElement = document.querySelector(`[data-index="${selectedIndex}"]`);
+                if (selectedElement) {
+                  selectedElement.scrollIntoView({ behavior: 'smooth' });
+                  // Wait for the scroll to complete before updating the index
+                  setTimeout(() => {
+                    window.dispatchEvent(new Event('scroll')); // Trigger scroll event to update index
+                  }, 300);
+                }
               }
             }
           }}
