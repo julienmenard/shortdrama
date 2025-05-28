@@ -215,6 +215,7 @@ const API_BASE_URL = 'https://userv1-pp.dv-content.io';
 const PRODUCT_ID = '2500'; 
 const SALT_PREFIX = 'f5c028c81f';
 const SALT_SUFFIX = '560e6cd05c8513b96062b0';
+const REQUEST_TIMEOUT = 10000; // 10 seconds timeout for fetch requests
 
 export interface AuthResponse {
   code: number;
@@ -272,19 +273,72 @@ export const authenticateUser = async (
   }
 };
 
-// Get user account information
+// Get user account information with improved error handling and timeout
 export const getUserInfo = async (userId: number): Promise<AccountInfoResponse> => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+    
     const url = `${API_BASE_URL}/accountinfo/all?service_id=${PRODUCT_ID}&user_id=${userId}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data as AccountInfoResponse;
+    console.log(`Fetching user info from: ${url}`);
+    
+    // Check for network connectivity first
+    if (!navigator.onLine) {
+      console.warn('Network is offline');
+      return {
+        code: 503,
+        error: 1,
+        message: 'Network connection unavailable'
+      };
+    }
+    
+    try {
+      const response = await fetch(url, { 
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        // Adding cache control to prevent stale responses
+        cache: 'no-cache'
+      });
+      
+      clearTimeout(timeoutId);
+      
+      console.log('User info response status:', response.status);
+      
+      if (!response.ok) {
+        return {
+          code: response.status,
+          error: 1,
+          message: `Server responded with status: ${response.status} ${response.statusText}`
+        };
+      }
+      
+      const data = await response.json();
+      console.log('User info response data:', data);
+      
+      return data as AccountInfoResponse;
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      
+      if (fetchError.name === 'AbortError') {
+        console.error('Request timed out after', REQUEST_TIMEOUT, 'ms');
+        return {
+          code: 408,
+          error: 1,
+          message: 'Request timed out. Please try again.'
+        };
+      }
+      
+      throw fetchError; // Re-throw to be caught by outer catch block
+    }
   } catch (error) {
     console.error('Error fetching user info:', error);
     return {
       code: 500,
       error: 1,
-      message: 'Failed to fetch user information'
+      message: `Failed to fetch user information: ${error.message || 'Unknown error'}`
     };
   }
 };

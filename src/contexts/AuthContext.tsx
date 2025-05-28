@@ -39,12 +39,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUser(userInfoResponse.data[0]);
             setIsAuthenticated(true);
           } else {
-            // Invalid session, clear storage
+            // Invalid session or API error, clear storage and show error
             localStorage.removeItem('userId');
+            console.warn('Session validation failed:', userInfoResponse.message || 'Unknown error');
+            setError('Your session has expired. Please log in again.');
           }
         } catch (error) {
           console.error('Session check error:', error);
           localStorage.removeItem('userId');
+          setError('Connection error. Please check your network and try again.');
         } finally {
           setIsLoading(false);
         }
@@ -53,7 +56,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    checkSession();
+    // Add retry mechanism for network issues
+    const attemptSessionCheck = () => {
+      checkSession().catch(error => {
+        console.error('Failed to check session:', error);
+        // Only retry if we're online - no point retrying if network is down
+        if (navigator.onLine) {
+          console.log('Retrying session check in 3 seconds...');
+          setTimeout(attemptSessionCheck, 3000);
+        } else {
+          setIsLoading(false);
+          setError('Network is unavailable. Please check your connection.');
+        }
+      });
+    };
+
+    attemptSessionCheck();
   }, []);
 
   const login = async (identifier: string, password: string): Promise<boolean> => {
@@ -61,6 +79,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     
     try {
+      // Check network connectivity first
+      if (!navigator.onLine) {
+        setError('Network connection unavailable. Please check your internet connection.');
+        return false;
+      }
+      
       // Authenticate user
       const authResponse = await authenticateUser(identifier, password);
       
@@ -85,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthenticated(true);
         return true;
       } else {
-        setError('Failed to retrieve user information.');
+        setError(userInfoResponse.message || 'Failed to retrieve user information.');
         return false;
       }
     } catch (error) {
