@@ -15,8 +15,18 @@ const EpisodesModal: React.FC<EpisodesModalProps> = ({
   onSelectEpisode,
   onClose
 }) => {
-  // Sort episodes by display_order
-  const sortedEpisodes = [...episodes].sort((a, b) => a.display_order - b.display_order);
+  // Extract episode number from title (e.g., "S01E01" -> 1)
+  const getEpisodeNumber = (title: string): number => {
+    const match = title.match(/S\d+E(\d+)/i);
+    return match ? parseInt(match[1], 10) : 999; // Default to high number if pattern not found
+  };
+
+  // Sort episodes by episode number from the title
+  const sortedEpisodes = [...episodes].sort((a, b) => {
+    const numA = getEpisodeNumber(a.title);
+    const numB = getEpisodeNumber(b.title);
+    return numA - numB;
+  });
 
   return (
     <div className="fixed inset-0 bg-black/90 z-50 flex items-end">
@@ -45,6 +55,7 @@ const EpisodesModal: React.FC<EpisodesModalProps> = ({
           <div className="grid grid-cols-1 gap-3">
             {sortedEpisodes.map((episode) => {
               const isCurrentEpisode = episode.content_id === currentEpisode.content_id;
+              const episodeNumber = getEpisodeNumber(episode.title);
               
               return (
                 <button
@@ -58,7 +69,7 @@ const EpisodesModal: React.FC<EpisodesModalProps> = ({
                 >
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 mr-4">
                     <span className="font-bold">
-                      {episode.display_order}
+                      {episodeNumber}
                     </span>
                   </div>
                   <div className="flex-1 text-left">
