@@ -313,7 +313,7 @@ const FeedPage = () => {
         const GALAXY_API_BASE_URL = 'https://galaxy-api.galaxydve.com';
         const GALAXY_API_KEY = 'api_key_iatest';
         const GALAXY_API_SECRET = 'GaLxAiDviTS12*';
-        const GALAXY_CAMPAIGN_ID = '5027';
+        const GALAXY_CAMPAIGN_ID = '5029';
         const GALAXY_SERVICE_ID = '39';
         const GALAXY_COUNTRY_CODE = 'gb';
         const GALAXY_LANGUAGE_CODE = 'en';
