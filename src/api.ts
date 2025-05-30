@@ -1,4 +1,6 @@
-import { VideoResponse } from './types';
+import { VideoResponse, SeriesResponse } from './types';
+import videoData from '../data/videoData';
+import sha1 from 'js-sha1';
 
 // Galaxy API configuration
 const GALAXY_API_BASE_URL = 'https://galaxy-api.galaxydve.com';
@@ -72,6 +74,57 @@ export const fetchVideos = async (rubricId?: string): Promise<VideoResponse> => 
     return data as VideoResponse;
   } catch (error) {
     console.error('Error fetching videos from Galaxy API:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetches series content from the Galaxy API
+ */
+export const fetchSeries = async (rubricId?: string): Promise<SeriesResponse> => {
+  try {
+    console.log('Fetching series from Galaxy API...');
+    
+    const params = new URLSearchParams({
+      api_key: GALAXY_API_KEY,
+      api_secret_key: GALAXY_API_SECRET,
+      country_code: GALAXY_COUNTRY_CODE,
+      language_code: GALAXY_LANGUAGE_CODE,
+      campaign_id: GALAXY_CAMPAIGN_ID,
+      service_id: GALAXY_SERVICE_ID,
+      content_type: 'series',
+      preview: 'true',
+      asset: 'true',
+      delivery: 'true',
+      without_token: 'true',
+      itemsPerPage: '100',
+      page: '1'
+    });
+
+    if (rubricId) {
+      params.append('rubric_id', rubricId);
+    }
+
+    const url = `${GALAXY_API_BASE_URL}/publishing-content-list?${params.toString()}`;
+    console.log(`Making series API request to: ${url}`);
+
+    const response = await fetch(url);
+    console.log('API response status:', response.status);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('API series response data:', data);
+    
+    if (data.code !== 200) {
+      throw new Error(`API error: ${data.message || 'Unknown error'}. Code: ${data.code}`);
+    }
+
+    return data as SeriesResponse;
+  } catch (error) {
+    console.error('Error fetching series from Galaxy API:', error);
     throw error;
   }
 };
@@ -209,7 +262,11 @@ export const searchContent = async (searchTerm: string): Promise<VideoResponse> 
 };
 
 // Import these from services/api for authentication
-import sha1 from 'js-sha1';
+// const API_BASE_URL = 'https://userv1-pp.dv-content.io';
+// const PRODUCT_ID = '2500'; 
+// const SALT_PREFIX = 'f5c028c81f';
+// const SALT_SUFFIX = '560e6cd05c8513b96062b0';
+// const REQUEST_TIMEOUT = 10000; // 10 seconds timeout for fetch requests
 
 const API_BASE_URL = 'https://userv1-pp.dv-content.io';
 const PRODUCT_ID = '2500'; 

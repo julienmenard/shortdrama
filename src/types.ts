@@ -21,6 +21,41 @@ export interface VideoData {
       resolution: string;
     };
   };
+  display_order?: number;
+}
+
+export interface SeriesData {
+  title: string;
+  description: string;
+  keywords: string[];
+  sales_mode: string[];
+  rubric_id: number[];
+  classification: Array<{
+    id: number;
+    system_label: string;
+    label: string;
+    age: number;
+    logo: string;
+    type: string;
+  }>;
+  assets: {
+    cover: Array<{
+      url: string;
+      ratio: string;
+      ratio_tech_label: string;
+      height: number;
+      width: number;
+      extension: string;
+      culture: string;
+      is_intl: boolean;
+      number: number;
+      create_date: string;
+      update_date: string;
+      size: number;
+    }>;
+  };
+  content_id?: number;
+  content_type?: string;
 }
 
 export interface VideoResponse {
@@ -34,6 +69,12 @@ export interface VideoResponse {
     page: number;
     data: VideoData[];
   };
+}
+
+export interface SeriesResponse {
+  code: number;
+  error: number;
+  data: SeriesData[];
 }
 
 export interface KlientoUser {
